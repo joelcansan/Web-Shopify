@@ -9,34 +9,45 @@ use PDOException;
 class Database
 {
     private static ?PDO $instance = null;
+    private static bool $failed = false;
 
-    public static function getInstance(): PDO
+    public static function getInstance(): ?PDO
     {
-        if (self::$instance === null) {
-            $host = $_ENV['DB_HOST']     ?? getenv('DB_HOST')     ?? 'db';
-            $port = $_ENV['DB_PORT']     ?? getenv('DB_PORT')     ?? '3306';
-            $name = $_ENV['DB_NAME']     ?? getenv('DB_NAME')     ?? 'shopify_guia';
-            $user = $_ENV['DB_USER']     ?? getenv('DB_USER')     ?? 'shopify_user';
-            $pass = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD') ?? 'shopify_pass';
+        if (self::$failed) return null;
+        if (self::$instance !== null) return self::$instance;
 
-            $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
+        $host = getenv('DB_HOST')     ?: ($_ENV['DB_HOST']     ?? '');
+        $port = getenv('DB_PORT')     ?: ($_ENV['DB_PORT']     ?? '3306');
+        $name = getenv('DB_NAME')     ?: ($_ENV['DB_NAME']     ?? '');
+        $user = getenv('DB_USER')     ?: ($_ENV['DB_USER']     ?? '');
+        $pass = getenv('DB_PASSWORD') ?: ($_ENV['DB_PASSWORD'] ?? '');
 
-            try {
-                self::$instance = new PDO($dsn, $user, $pass, [
+        if (empty($host) || empty($name) || empty($user)) {
+            self::$failed = true;
+            return null;
+        }
+
+        try {
+            self::$instance = new PDO(
+                "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4",
+                $user,
+                $pass,
+                [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
                     PDO::ATTR_EMULATE_PREPARES   => false,
-                ]);
-            } catch (PDOException $e) {
-                http_response_code(500);
-                die('<h1>Error de conexión a la base de datos</h1><pre>' . htmlspecialchars($e->getMessage()) . '</pre>');
-            }
+                    PDO::ATTR_TIMEOUT            => 5,
+                ]
+            );
+        } catch (PDOException $e) {
+            self::$failed = true;
+            error_log('DB connection failed: ' . $e->getMessage());
+            return null;
         }
 
         return self::$instance;
     }
 
-    // Evitar clonación y serialización del singleton
     private function __construct() {}
     private function __clone() {}
 }

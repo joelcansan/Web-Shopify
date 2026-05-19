@@ -9,7 +9,9 @@ class Articulo
 {
     public static function bySeccion(string $seccion): array
     {
-        $pdo  = Database::getInstance();
+        $pdo = Database::getInstance();
+        if ($pdo === null) return [];
+
         $stmt = $pdo->prepare(
             'SELECT * FROM articulos WHERE seccion = ? AND activo = 1 ORDER BY orden ASC'
         );

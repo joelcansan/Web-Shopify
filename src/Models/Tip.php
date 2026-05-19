@@ -9,7 +9,9 @@ class Tip
 {
     public static function bySeccion(string $seccion): array
     {
-        $pdo  = Database::getInstance();
+        $pdo = Database::getInstance();
+        if ($pdo === null) return [];
+
         $stmt = $pdo->prepare(
             'SELECT * FROM tips WHERE seccion = ? ORDER BY orden ASC'
         );

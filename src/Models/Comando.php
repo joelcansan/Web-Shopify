@@ -9,7 +9,9 @@ class Comando
 {
     public static function allGrouped(): array
     {
-        $pdo  = Database::getInstance();
+        $pdo = Database::getInstance();
+        if ($pdo === null) return [];
+
         $stmt = $pdo->query('SELECT * FROM comandos_cli ORDER BY categoria, id');
         $rows = $stmt->fetchAll();
 
