@@ -1,0 +1,7 @@
+[build]
+dockerfilePath = "docker/php/Dockerfile"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 60
+restartPolicyType = "on_failure"
