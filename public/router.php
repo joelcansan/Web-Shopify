@@ -2,12 +2,6 @@
 $uri = $_SERVER['REQUEST_URI'];
 $parsedPath = parse_url($uri, PHP_URL_PATH);
 
-// Debug temporal
-if ($parsedPath === '/debug.php') {
-    require __DIR__ . '/debug.php';
-    exit;
-}
-
 // Servir archivos estáticos desde public/
 $publicFile = __DIR__ . $parsedPath;
 if (file_exists($publicFile) && is_file($publicFile)) {
