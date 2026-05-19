@@ -1,7 +1,7 @@
 <footer class="site-footer">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <span class="nav__logo-text">Shopify<strong>Guía</strong></span>
+      <span class="nav__logo-text">Tuto<strong>fy</strong></span>
       <p>Recurso educativo no oficial sobre Shopify.<br>No afiliado con Shopify Inc.</p>
     </div>
     <nav class="footer__nav" aria-label="Pie de página">
@@ -17,6 +17,6 @@
     </nav>
   </div>
   <div class="footer__bottom container">
-    <p>&copy; <?php echo date('Y'); ?> ShopifyGuía · Recurso educativo independiente</p>
+    <p>&copy; <?php echo date('Y'); ?> Tutofy · Recurso educativo independiente</p>
   </div>
 </footer>
