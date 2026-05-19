@@ -8,11 +8,13 @@ $current_path = rtrim($current_path, '/') ?: '/';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Guía completa sobre Shopify: Liquid, CLI, planes, temas y más." />
-  <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' · ShopifyGuía' : 'ShopifyGuía'; ?></title>
+  <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' · Tutofy' : 'Tutofy';?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
 </head>
 <body>
 
