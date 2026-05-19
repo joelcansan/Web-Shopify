@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+
+  php:
+    build: ./docker/php
+    container_name: shopify_php
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./src:/var/www/html/src
+      - ./templates:/var/www/html/templates
+      - ./assets:/var/www/html/assets
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shopify_net
+    environment:
+      DB_HOST:     db
+      DB_PORT:     3306
+      DB_NAME:     shopify_guia
+      DB_USER:     shopify_user
+      DB_PASSWORD: shopify_pass
+    command: php -S 0.0.0.0:8080 -t /var/www/html/public /var/www/html/public/router.php
+
+  db:
+    image: mysql:8.0
+    container_name: shopify_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE:      shopify_guia
+      MYSQL_USER:          shopify_user
+      MYSQL_PASSWORD:      shopify_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - shopify_db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "shopify_user", "-pshopify_pass"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - shopify_net
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: shopify_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST:     db
+      PMA_USER:     shopify_user
+      PMA_PASSWORD: shopify_pass
+    depends_on:
+      - db
+    networks:
+      - shopify_net
+
+volumes:
+  shopify_db_data:
+
+networks:
+  shopify_net:
+    driver: bridge
